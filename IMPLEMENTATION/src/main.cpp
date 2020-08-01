@@ -13,16 +13,16 @@
 #include "Timerconfiguration.h"
 
 #define PRESCALER 65535
-#define ARR_VALUE 1098
-custom_libraries::Timer_configuration timer(TIM1,PRESCALER,ARR_VALUE);
+#define ARR_VALUE 550
+custom_libraries::Timer_configuration timer(TIM2,PRESCALER,ARR_VALUE);
 
 uint32_t counter = 0;
 
 //IMPLEMENT INTERRUPT HANDLER
-extern "C" void TIM1_UP_IRQHandler(void){
+extern "C" void TIM2_IRQHandler(void){
 	//CHECK THAT WE ARE HERE BECAUSE OF TIMER1 UPDATE EVENT
-	if(TIM1->SR & TIM_SR_UIF){
-		TIM1->SR &= ~TIM_SR_UIF;
+	if(TIM2->SR & TIM_SR_UIF){
+		TIM2->SR &= ~TIM_SR_UIF;
 		counter++;
 	}
 
@@ -32,8 +32,8 @@ int main(void)
 {
 	timer.initialize();
 
-	NVIC_SetPriority(TIM1_UP_IRQn,0x03);
-	NVIC_EnableIRQ(TIM1_UP_IRQn);
+	NVIC_SetPriority(TIM2_IRQn,0x03);
+	NVIC_EnableIRQ(TIM2_IRQn);
 
 	while(1){
 
